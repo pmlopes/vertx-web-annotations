@@ -76,3 +76,67 @@ The POJO to be passed to the builder is a Object instance not a class, the reaso
 in some cases it is handy to have a constructor where you can pass arguments such as configuration,
 vertx instance, etc....
 
+
+## Extending this thing!
+
+So you want more annotations, perhaps you want swagger generation ;) well in that case all you need
+is to:
+
+1. Create your custom annotation
+2. Register a new processor for your annotation
+3. Profit
+
+### Example
+
+#### Create a custom annotation
+
+```java
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.METHOD})
+public @interface Say {
+  String value() default "Hello World";
+}
+```
+
+#### Create a processor
+
+```java
+public class SayProcessorHandler extends AbstractAnnotationHandler<Router> {
+
+  public SayProcessorHandler() {
+    super(Router.class);
+  }
+
+  @Override
+  public void process(final Router router, final Object instance, final Class<?> clazz, final Method method) {
+
+    if (Processor.isCompatible(method, Say.class, RoutingContext.class)) {
+      System.out.println("The annotation says: " + Processor.getAnnotation(method, Say.class).value());
+    }
+  }
+}
+```
+
+As you see from the process method, you have the router object instance and your annotation so now
+you can add your custom handlers if you wish so, e.g.:
+
+```java
+public class SayProcessorHandler extends AbstractAnnotationHandler<Router> {
+
+  public SayProcessorHandler() {
+    super(Router.class);
+  }
+
+  @Override
+  public void process(final Router router, final Object instance, final Class<?> clazz, final Method method) {
+
+    if (Processor.isCompatible(method, Say.class, RoutingContext.class)) {
+      final String whatToSay = Processor.getAnnotation(method, Say.class).value();
+      router.route().handler(ctx -> {
+        System.out.println(whatToSay);
+        ctx.next();
+      });
+    }
+  }
+}
+```
