@@ -36,7 +36,7 @@ public interface AnnotatedRouter {
    * @return router object
    */
   static Router create(final Vertx vertx, final Object... objs) {
-    return create(Router.router(vertx), objs);
+    return append(Router.router(vertx), objs);
   }
 
   /**
@@ -46,7 +46,7 @@ public interface AnnotatedRouter {
    * @param objs the pojos to process
    * @return router object
    */
-  static Router create(final Router router, Object... objs) {
+  static Router append(final Router router, Object... objs) {
     for (Object o : objs) {
       Processor.process(router, o);
     }

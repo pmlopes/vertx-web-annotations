@@ -45,7 +45,7 @@ public class MyVerticle extends AbstactVerticle {
 
     app = AnnotatedRouter.create(vertx, new SomePOJO());
     // note that the first argument is now the previous Router
-    app = AnnotatedRouter.create(app, new OtherPOJO());
+    app = AnnotatedRouter.append(app, new OtherPOJO());
 
     vertx.createHttpServer()
       .requestHandler(app::accept)
