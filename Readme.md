@@ -140,3 +140,10 @@ public class SayProcessorHandler extends AbstractAnnotationHandler<Router> {
   }
 }
 ```
+
+#### Register a custom processor
+
+```java
+Processor.registerProcessor(SayProcessorHandler.class);
+```
+
